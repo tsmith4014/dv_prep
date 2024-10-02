@@ -1,28 +1,24 @@
-Absolutely! I apologize for the oversight. Here's a revised study guide tailored specifically for macOS, ensuring that all practical examples and terminal commands work correctly. This guide emphasizes hands-on practice based on your boss's guidelines.
-
----
-
-# **Comprehensive macOS Study Guide for Your DevOps and System Administrator Internship**
+# **Comprehensive Study Guide for Your DevOps and System Administrator Internship**
 
 ---
 
 ## **Table of Contents**
 
 1. **Introduction**
-2. **macOS Internals**
+2. **System Internals**
    - a. sysctl
-   - b. NUMA Considerations on macOS
-   - c. GNU Readline and macOS Shell Enhancements
+   - b. NUMA (Non-Uniform Memory Access)
+   - c. Command-Line Efficiency (GNU Readline, Shell Enhancements)
 3. **Git Proficiency**
    - a. Cloning Repositories with Submodules
    - b. Forking and Making Changes
    - c. Merging Back and Updating Upstream Submodules
 4. **Ansible**
-   - a. Installation on macOS
-   - b. On-Premises Configuration Management
+   - a. Installation
+   - b. Configuration Management
    - c. Advanced Concepts
 5. **Terraform**
-   - a. Installation on macOS
+   - a. Installation
    - b. AWS Infrastructure Automation
    - c. Best Practices
 6. **Oracle Cloud and OKE Cluster with Cluster API**
@@ -30,165 +26,236 @@ Absolutely! I apologize for the oversight. Here's a revised study guide tailored
    - b. Kubernetes Cluster Management with Cluster API
    - c. Practical Exercises
 7. **Additional Resources**
+8. **Conclusion**
 
 ---
 
 ## **1. Introduction**
 
-This study guide is tailored for macOS users preparing for a DevOps and System Administrator internship at DV Trading in Chicago. It covers essential topics recommended by your future team, focusing on macOS internals, Git proficiency, configuration management with Ansible, infrastructure automation with Terraform, and Kubernetes cluster management using Oracle Cloud's OKE and Cluster API.
+This study guide is designed to prepare you for your upcoming DevOps and System Administrator internship at high-speed trading firm in Chicago. It covers essential topics recommended by your future team, focusing on both macOS and Linux environments to align with the hybrid infrastructure you'll encounter. The guide emphasizes practical, hands-on exercises to ensure you're comfortable working in both operating systems.
 
 ---
 
-## **2. macOS Internals**
+## **2. System Internals**
 
-While macOS is Unix-based, there are differences in commands and system behavior compared to Linux. Understanding these differences is crucial for hands-on practice on your Mac.
+Understanding system internals is crucial for system administration, especially in environments demanding high performance and low latency.
 
 ### **a. sysctl**
 
 #### **Overview**
 
-`sysctl` on macOS allows you to view and modify kernel parameters at runtime. It's used to configure system settings related to networking, security, and hardware.
+`sysctl` allows you to view and modify kernel parameters at runtime, affecting system behavior related to networking, security, and hardware.
 
 #### **Key Concepts**
 
 - **Kernel Parameters**: Variables controlling system behavior.
-- **Dynamic vs. Static Parameters**: Some parameters can be changed at runtime, others require a reboot.
-- **Persistence**: Changes are not persistent across reboots unless configured.
+- **Persistence**: Changes made via `sysctl` are temporary unless made persistent.
+
+#### **macOS vs. Linux Differences**
+
+- **macOS**: Uses BSD-style `sysctl`.
+- **Linux**: Uses GNU-style `sysctl`.
 
 #### **Commands and Usage**
 
-- **View All Parameters**:
+**Viewing All Parameters**
+
+- **macOS**:
 
   ```bash
   sysctl -a
   ```
 
-- **Get Specific Parameter**:
+- **Linux**:
+
+  ```bash
+  sysctl -a
+  ```
+
+**Getting Specific Parameter**
+
+- **macOS**:
 
   ```bash
   sysctl net.inet.ip.forwarding
   ```
 
-- **Set Parameter Temporarily**:
+- **Linux**:
+
+  ```bash
+  sysctl net.ipv4.ip_forward
+  ```
+
+**Setting Parameter Temporarily**
+
+- **macOS**:
 
   ```bash
   sudo sysctl -w net.inet.ip.forwarding=1
   ```
 
-- **Set Parameter Permanently**:
+- **Linux**:
 
-  On macOS, persistent changes require modifying `/etc/sysctl.conf` (which may not exist by default) or using `launchctl`. However, macOS does not support persistent `sysctl` settings in the same way as Linux.
+  ```bash
+  sudo sysctl -w net.ipv4.ip_forward=1
+  ```
 
-  **Alternative**: Use `pfctl` or create a launch daemon for persistent settings.
+**Setting Parameter Permanently**
 
-#### **Practical Exercises**
+- **macOS**:
 
-1. **Enable IP Forwarding**: Allow your Mac to forward packets, effectively acting as a router.
+  - macOS doesn't support `/etc/sysctl.conf` by default.
+  - Use launch daemons or scripts at startup.
 
-   ```bash
-   sudo sysctl -w net.inet.ip.forwarding=1
-   ```
+- **Linux**:
 
-   Verify:
-
-   ```bash
-   sysctl net.inet.ip.forwarding
-   ```
-
-   Output should be:
-
-   ```
-   net.inet.ip.forwarding: 1
-   ```
-
-2. **List All Network Parameters**:
-
-   ```bash
-   sysctl net.inet
-   ```
-
-3. **Adjust Maximum Files Open Limit**:
-
-   View current limit:
-
-   ```bash
-   sysctl kern.maxfiles
-   ```
-
-   Temporarily increase:
-
-   ```bash
-   sudo sysctl -w kern.maxfiles=65536
-   ```
-
-   **Note**: Adjusting `kern.maxfiles` may require additional steps on macOS due to system integrity protection.
-
-#### **Considerations**
-
-- Always use `sudo` when modifying kernel parameters.
-- Be cautious; incorrect settings can affect system stability.
-- Changes made via `sysctl` are temporary and reset on reboot.
-
-### **b. NUMA Considerations on macOS**
-
-#### **Overview**
-
-macOS runs on hardware that generally doesn't require NUMA (Non-Uniform Memory Access) configuration, as it's designed for uniform memory access systems. However, understanding memory architecture is still valuable.
-
-#### **Key Concepts**
-
-- **UMA vs. NUMA**: macOS is optimized for UMA (Uniform Memory Access).
-- **Memory Management**: macOS handles memory allocation and process scheduling without user intervention.
+  ```bash
+  echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+  sudo sysctl -p
+  ```
 
 #### **Practical Exercises**
 
-1. **Monitor Memory Usage**:
+1. **Enable IP Forwarding**
 
-   Use the `vm_stat` command to monitor virtual memory statistics.
+   - **macOS**:
+
+     ```bash
+     sudo sysctl -w net.inet.ip.forwarding=1
+     sysctl net.inet.ip.forwarding
+     ```
+
+   - **Linux**:
+
+     ```bash
+     sudo sysctl -w net.ipv4.ip_forward=1
+     sysctl net.ipv4.ip_forward
+     ```
+
+2. **List Network Parameters**
+
+   - **macOS**:
+
+     ```bash
+     sysctl net.inet
+     ```
+
+   - **Linux**:
+
+     ```bash
+     sysctl net.ipv4
+     ```
+
+3. **Adjust Maximum Files Open Limit**
+
+   - **macOS**:
+
+     ```bash
+     sysctl kern.maxfiles
+     sudo sysctl -w kern.maxfiles=65536
+     ```
+
+   - **Linux**:
+
+     ```bash
+     sysctl fs.file-max
+     sudo sysctl -w fs.file-max=65536
+     ```
+
+#### **Considerations**
+
+- **Safety**: Always understand the impact of kernel parameter changes.
+- **Persistence**: Linux supports persistent changes via `/etc/sysctl.conf`; macOS requires alternative methods.
+- **Permissions**: `sudo` is often required.
+
+### **b. NUMA (Non-Uniform Memory Access)**
+
+#### **Overview**
+
+NUMA optimizes memory access times in multi-processor systems. While macOS hardware generally doesn't require NUMA tuning, Linux systems, especially servers, often benefit from it.
+
+#### **Key Concepts**
+
+- **NUMA Nodes**: Logical grouping of CPUs and memory.
+- **Local vs. Remote Memory Access**: Accessing memory within the same NUMA node is faster.
+
+#### **Commands and Usage**
+
+**macOS**
+
+- macOS doesn't provide NUMA tools since it uses UMA (Uniform Memory Access).
+
+**Linux**
+
+- **View NUMA Configuration**:
+
+  ```bash
+  numactl --hardware
+  ```
+
+- **Run Process on Specific NUMA Node**:
+
+  ```bash
+  numactl --cpunodebind=0 --membind=0 ./your_application
+  ```
+
+- **Check NUMA Policy of a Process**:
+
+  ```bash
+  numastat -p $(pidof your_application)
+  ```
+
+#### **Practical Exercises**
+
+1. **Inspect NUMA Nodes (Linux Only)**:
 
    ```bash
-   vm_stat
+   lscpu | grep -i numa
    ```
 
-2. **Use `top` for Real-Time Monitoring**:
+2. **Run Memory-Intensive Application (Linux Only)**:
+
+   - Install `numactl`:
+
+     ```bash
+     sudo apt-get install numactl  # Debian/Ubuntu
+     sudo yum install numactl      # CentOS/RHEL
+     ```
+
+   - Run application with `numactl`.
+
+3. **Monitor NUMA Statistics (Linux Only)**:
 
    ```bash
-   top -o mem
-   ```
-
-3. **Explore System Information**:
-
-   View detailed hardware info:
-
-   ```bash
-   system_profiler SPHardwareDataType
+   sudo apt-get install numactl     # Debian/Ubuntu
+   sudo yum install numactl numactl-devel numactl-tools  # CentOS/RHEL
+   numastat
    ```
 
 #### **Considerations**
 
-- While NUMA tuning isn't applicable, understanding system performance and monitoring tools is essential.
-- Focus on learning NUMA concepts theoretically, as they apply to Linux systems you'll encounter in your internship.
+- **macOS Users**: Focus on understanding NUMA concepts theoretically.
+- **Linux Users**: Hands-on practice with `numactl` and `numastat`.
 
-### **c. GNU Readline and macOS Shell Enhancements**
+### **c. Command-Line Efficiency (GNU Readline, Shell Enhancements)**
 
 #### **Overview**
 
-macOS uses `zsh` as the default shell in recent versions, which includes features similar to GNU Readline. Enhancing your command-line efficiency will make you more productive.
+Improving command-line efficiency is essential for productivity. Both macOS and Linux use shells that support command-line editing and history navigation.
 
-#### **Key Concepts**
+#### **Shells**
 
-- **Command-Line Editing**: Navigating and editing commands efficiently.
-- **History Navigation**: Accessing and reusing previous commands.
-- **Shell Customization**: Modifying `zsh` behavior through configuration files.
+- **macOS**: Uses `zsh` as the default shell.
+- **Linux**: Typically uses `bash`, but `zsh` and others are available.
 
-#### **Common Keyboard Shortcuts in `zsh`**
+#### **Common Keyboard Shortcuts**
 
 - **Navigation**:
 
   - `Ctrl + a`: Move to the beginning of the line.
   - `Ctrl + e`: Move to the end of the line.
-  - `Option + f`: Move forward one word.
-  - `Option + b`: Move backward one word.
+  - `Option/Alt + f`: Move forward one word.
+  - `Option/Alt + b`: Move backward one word.
 
 - **Editing**:
 
@@ -204,25 +271,50 @@ macOS uses `zsh` as the default shell in recent versions, which includes feature
 
 #### **Customization**
 
+**macOS (`zsh`)**
+
 - **Edit `.zshrc`**:
 
   ```bash
   nano ~/.zshrc
   ```
 
-  Add or modify configurations, for example:
+- **Enable Plugins with Oh My Zsh**:
 
   ```bash
-  # Enable command correction
-  setopt CORRECT
-
-  # Customize prompt
-  PROMPT='%n@%m %1~ %# '
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
   ```
 
-- **Install Oh My Zsh**:
+- **Add Plugins**:
 
-  Enhance your `zsh` experience with themes and plugins.
+  Edit `~/.zshrc`:
+
+  ```bash
+  plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+  ```
+
+- **Install Plugins**:
+
+  ```bash
+  brew install zsh-autosuggestions zsh-syntax-highlighting
+  ```
+
+**Linux (`bash` or `zsh`)**
+
+- **Edit `.bashrc` or `.zshrc`**:
+
+  ```bash
+  nano ~/.bashrc  # For bash
+  nano ~/.zshrc   # For zsh
+  ```
+
+- **Customize Prompt**:
+
+  ```bash
+  PS1='\u@\h \w\$ '
+  ```
+
+- **Install Oh My Zsh (if using `zsh`)**:
 
   ```bash
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -230,83 +322,94 @@ macOS uses `zsh` as the default shell in recent versions, which includes feature
 
 #### **Practical Exercises**
 
-1. **Practice Shortcuts**: Use the keyboard shortcuts while navigating the terminal.
+1. **Practice Keyboard Shortcuts**:
 
-2. **Customize Your Prompt**: Modify your `PROMPT` variable in `~/.zshrc` to include useful information.
+   - Spend time using shortcuts instead of arrow keys.
 
-3. **Enable Syntax Highlighting**:
+2. **Customize Your Shell Prompt**:
 
-   Install the syntax highlighting plugin:
+   - Modify `PS1` (for `bash`) or `PROMPT` (for `zsh`).
 
-   ```bash
-   brew install zsh-syntax-highlighting
-   ```
+3. **Enable Syntax Highlighting and Auto-Suggestions**:
 
-   Add to `.zshrc`:
+   - **macOS**:
 
-   ```bash
-   source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-   ```
+     ```bash
+     brew install zsh-syntax-highlighting zsh-autosuggestions
+     ```
 
-4. **Auto-Suggestions**:
+   - **Linux (Debian/Ubuntu)**:
 
-   Install the auto-suggestions plugin:
+     ```bash
+     sudo apt-get install zsh-syntax-highlighting
+     ```
 
-   ```bash
-   brew install zsh-autosuggestions
-   ```
+     - For `zsh-autosuggestions`, clone the repository:
 
-   Add to `.zshrc`:
+       ```bash
+       git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+       ```
 
-   ```bash
-   source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-   ```
+       Add to `.zshrc`:
+
+       ```bash
+       source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+       ```
 
 #### **Considerations**
 
-- Remember to reload your shell or source your `.zshrc` after changes:
+- **Reload Shell Configuration**:
 
   ```bash
-  source ~/.zshrc
+  source ~/.bashrc    # For bash
+  source ~/.zshrc     # For zsh
   ```
 
-- Regularly back up your `.zshrc` file.
+- **Portability**: Keep customizations portable across systems.
 
 ---
 
 ## **3. Git Proficiency**
 
-Git is essential for version control. Practicing on macOS will prepare you for collaborative workflows.
+Git is an essential tool for version control in software development.
 
 ### **a. Cloning Repositories with Submodules**
 
 #### **Overview**
 
-Submodules let you include other Git repositories within a repository.
+Submodules allow you to include other repositories within your repository.
 
 #### **Installation**
 
-Ensure Git is installed:
+- **macOS**:
 
-```bash
-git --version
-```
+  ```bash
+  git --version  # Should be pre-installed
+  ```
 
-If not installed, install via Homebrew:
+- **Linux**:
 
-```bash
-brew install git
-```
+  - **Debian/Ubuntu**:
+
+    ```bash
+    sudo apt-get install git
+    ```
+
+  - **CentOS/RHEL**:
+
+    ```bash
+    sudo yum install git
+    ```
 
 #### **Commands and Usage**
 
-- **Clone a Repository with Submodules**:
+- **Clone with Submodules**:
 
   ```bash
   git clone --recurse-submodules <repository_url>
   ```
 
-- **Initialize and Update Submodules (if already cloned)**:
+- **Initialize and Update Submodules**:
 
   ```bash
   git submodule update --init --recursive
@@ -317,13 +420,14 @@ brew install git
 1. **Clone a Repository with Submodules**:
 
    ```bash
-   git clone --recurse-submodules https://github.com/username/repo-with-submodules.git
+   git clone --recurse-submodules https://github.com/yourusername/repo-with-submodules.git
    ```
 
 2. **Add a Submodule**:
 
    ```bash
    git submodule add https://github.com/username/submodule-repo.git path/to/submodule
+   git commit -am "Add submodule"
    ```
 
 3. **Update Submodules**:
@@ -334,20 +438,20 @@ brew install git
 
 #### **Considerations**
 
-- Always commit changes to submodules separately.
-- Be aware of the submodule's specific commit hash.
+- **Commit Changes in Submodules**: Remember to push changes in submodules separately.
+- **Beware of Specific Commits**: Submodules point to specific commits.
 
 ### **b. Forking and Making Changes**
 
 #### **Overview**
 
-Forking allows you to contribute to projects without affecting the original repository.
+Forking allows you to work on a copy of someone else's repository.
 
 #### **Practical Exercises**
 
 1. **Fork a Repository**:
 
-   - Use GitHub's interface to fork a repository.
+   - Use GitHub or GitLab interface to fork.
 
 2. **Clone Your Fork**:
 
@@ -361,38 +465,41 @@ Forking allows you to contribute to projects without affecting the original repo
    git remote add upstream https://github.com/originalusername/original-repo.git
    ```
 
-4. **Make Changes**:
+4. **Synchronize with Upstream**:
 
-   - Create a new branch:
+   ```bash
+   git fetch upstream
+   git merge upstream/main
+   ```
 
-     ```bash
-     git checkout -b feature/new-feature
-     ```
+5. **Create a Feature Branch**:
 
-   - Make your code changes.
+   ```bash
+   git checkout -b feature/new-feature
+   ```
 
-5. **Commit and Push**:
+6. **Make Changes and Commit**:
 
    ```bash
    git add .
-   git commit -m "Add new feature"
+   git commit -m "Describe your changes"
    git push origin feature/new-feature
    ```
 
-6. **Create a Pull Request**:
+7. **Create a Pull Request**:
 
-   - Use GitHub's interface to submit a pull request from your branch.
+   - Use the web interface to submit a pull request.
 
 #### **Considerations**
 
-- Keep your fork updated with upstream changes.
-- Follow the project's contribution guidelines.
+- **Regular Updates**: Keep your fork updated.
+- **Follow Guidelines**: Adhere to contribution guidelines.
 
 ### **c. Merging Back and Updating Upstream Submodules**
 
 #### **Practical Exercises**
 
-1. **Sync Your Fork**:
+1. **Sync Fork with Upstream**:
 
    ```bash
    git fetch upstream
@@ -407,91 +514,100 @@ Forking allows you to contribute to projects without affecting the original repo
    git submodule update --init --recursive
    ```
 
-3. **Resolve Merge Conflicts**:
+3. **Handle Merge Conflicts**:
 
-   - If conflicts arise, use:
-
-     ```bash
-     git mergetool
-     ```
-
+   - Use `git mergetool` or resolve conflicts manually.
    - After resolving:
 
      ```bash
+     git add .
      git commit
      ```
 
 #### **Considerations**
 
-- Regularly check for updates from the upstream repository.
-- Use descriptive commit messages.
+- **Communication**: Inform maintainers of submodule updates.
+- **Testing**: Ensure updates don't break functionality.
 
 ---
 
 ## **4. Ansible**
 
-Ansible automates configuration management, application deployment, and more.
+Ansible automates configuration management and deployment tasks.
 
-### **a. Installation on macOS**
+### **a. Installation**
 
-#### **Using Homebrew**
+**macOS**
 
-1. **Install Homebrew** (if not already installed):
-
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-
-2. **Install Ansible**:
-
-   ```bash
-   brew install ansible
-   ```
-
-3. **Verify Installation**:
-
-   ```bash
-   ansible --version
-   ```
-
-### **b. On-Premises Configuration Management**
-
-#### **Setting Up a Test Environment**
-
-- **Use Virtualization**: Install VirtualBox and Vagrant to create Linux VMs for practice.
+- **Using Homebrew**:
 
   ```bash
-  brew install --cask virtualbox
-  brew install --cask vagrant
+  brew install ansible
   ```
 
-- **Create a Vagrantfile**:
+**Linux**
+
+- **Debian/Ubuntu**:
 
   ```bash
-  mkdir ansible-test
-  cd ansible-test
-  vagrant init ubuntu/focal64
+  sudo apt-get update
+  sudo apt-get install ansible
   ```
 
-- **Start the VM**:
+- **CentOS/RHEL**:
 
   ```bash
-  vagrant up
+  sudo yum install epel-release
+  sudo yum install ansible
   ```
 
-- **SSH into the VM**:
+### **b. Configuration Management**
 
-  ```bash
-  vagrant ssh
-  ```
+#### **Setting Up Test Environments**
+
+- **macOS and Linux**:
+
+  - **Install VirtualBox and Vagrant**:
+
+    - **macOS**:
+
+      ```bash
+      brew install --cask virtualbox vagrant
+      ```
+
+    - **Linux (Debian/Ubuntu)**:
+
+      ```bash
+      sudo apt-get install virtualbox vagrant
+      ```
+
+  - **Create a Vagrantfile**:
+
+    ```bash
+    mkdir ansible-test
+    cd ansible-test
+    vagrant init ubuntu/focal64
+    ```
+
+  - **Start the VM**:
+
+    ```bash
+    vagrant up
+    ```
+
+  - **SSH into the VM**:
+
+    ```bash
+    vagrant ssh
+    ```
 
 #### **Configuring Ansible Inventory**
 
-- **Create an Inventory File**:
+- **Create an Inventory File `inventory`**:
 
   ```ini
   [testservers]
-  127.0.0.1 ansible_port=2222 ansible_user=vagrant ansible_private_key_file=~/.vagrant.d/insecure_private_key
+  127.0.0.1 ansible_port=2222 ansible_user=vagrant ansible_private_key_file=.vagrant/machines/default/virtualbox/private_key
   ```
 
 #### **Running Ad-Hoc Commands**
@@ -508,6 +624,8 @@ Ansible automates configuration management, application deployment, and more.
    ansible all -i inventory -m apt -a "name=htop state=present update_cache=yes" --become
    ```
 
+   - **Note**: Replace `apt` with `yum` for CentOS/RHEL VMs.
+
 #### **Writing Playbooks**
 
 1. **Create a Playbook `setup.yml`**:
@@ -517,12 +635,13 @@ Ansible automates configuration management, application deployment, and more.
      hosts: testservers
      become: yes
      tasks:
-       - name: Update apt cache
+       - name: Update package cache
          apt:
            update_cache: yes
+         when: ansible_os_family == 'Debian'
 
        - name: Install packages
-         apt:
+         package:
            name:
              - htop
              - git
@@ -537,7 +656,7 @@ Ansible automates configuration management, application deployment, and more.
 
 #### **Using Roles**
 
-1. **Create a Role Structure**:
+1. **Create a Role**:
 
    ```bash
    ansible-galaxy init roles/common
@@ -547,7 +666,7 @@ Ansible automates configuration management, application deployment, and more.
 
    ```yaml
    - name: Install common packages
-     apt:
+     package:
        name:
          - curl
          - vim
@@ -566,46 +685,41 @@ Ansible automates configuration management, application deployment, and more.
 
 #### **Practical Exercises**
 
-1. **Automate User Management**:
+1. **User Management**:
 
-   - Write a playbook to create users, set passwords, and manage SSH keys.
+   - Create users, set passwords, and manage SSH keys.
 
-2. **Configure a Web Server**:
+2. **Web Server Configuration**:
 
-   - Install and configure Nginx or Apache using Ansible.
+   - Install and configure Nginx or Apache.
 
-3. **Manage Files and Templates**:
+3. **File Management with Templates**:
 
-   - Use the `copy` and `template` modules to manage configuration files.
+   - Use `copy` and `template` modules.
 
 #### **Considerations**
 
-- Use the `--check` flag to perform a dry run:
-
-  ```bash
-  ansible-playbook -i inventory setup.yml --check
-  ```
-
-- Ansible uses SSH for communication; ensure key-based authentication is set up.
+- **Idempotency**: Ensure tasks can run multiple times safely.
+- **Variables and Facts**: Use `vars` and `ansible_facts`.
 
 ### **c. Advanced Concepts**
 
 #### **Ansible Vault**
 
-1. **Create an Encrypted File**:
+1. **Encrypt Variables**:
 
    ```bash
    ansible-vault create vars/secrets.yml
    ```
 
-2. **Use the Encrypted File in Playbooks**:
+2. **Use Encrypted Files**:
 
    ```yaml
    vars_files:
      - vars/secrets.yml
    ```
 
-3. **Run Playbook with Vault Password**:
+3. **Run Playbook with Vault**:
 
    ```bash
    ansible-playbook -i inventory setup.yml --ask-vault-pass
@@ -613,80 +727,122 @@ Ansible automates configuration management, application deployment, and more.
 
 #### **Dynamic Inventory**
 
-- For cloud environments, use dynamic inventory scripts or plugins.
+- Use dynamic inventory scripts for cloud environments (AWS, Azure).
+
+#### **Error Handling**
+
+- **Ignore Errors**:
+
+  ```yaml
+  ignore_errors: yes
+  ```
+
+- **Handlers and Notifications**:
+
+  ```yaml
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+  ```
 
 #### **Practical Exercises**
 
-1. **Encrypt Sensitive Data**:
+1. **Encrypt Sensitive Data**.
 
-   - Store database passwords or API keys securely using Ansible Vault.
+2. **Conditional Tasks and Loops**.
 
-2. **Implement Conditional Tasks**:
-
-   - Use `when` statements to execute tasks based on conditions.
-
-3. **Error Handling**:
-
-   - Practice using `ignore_errors` and handling failures gracefully.
+3. **Roles with Dependencies**.
 
 ---
 
 ## **5. Terraform**
 
-Terraform allows you to manage infrastructure as code.
+Terraform is used for infrastructure provisioning.
 
-### **a. Installation on macOS**
+### **a. Installation**
 
-1. **Using Homebrew**:
+**macOS**
 
-   ```bash
-   brew tap hashicorp/tap
-   brew install hashicorp/tap/terraform
-   ```
+- **Using Homebrew**:
 
-2. **Verify Installation**:
+  ```bash
+  brew tap hashicorp/tap
+  brew install hashicorp/tap/terraform
+  ```
 
-   ```bash
-   terraform -v
-   ```
+**Linux**
+
+- **Debian/Ubuntu**:
+
+  ```bash
+  sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+  sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  sudo apt-get update && sudo apt-get install terraform
+  ```
+
+- **CentOS/RHEL**:
+
+  ```bash
+  sudo yum install -y yum-utils
+  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  sudo yum -y install terraform
+  ```
 
 ### **b. AWS Infrastructure Automation**
 
 #### **AWS Setup**
 
-1. **Create an AWS Account**: Sign up for the [AWS Free Tier](https://aws.amazon.com/free/).
+- **Create AWS Account**.
 
-2. **Install AWS CLI**:
+- **Install AWS CLI**:
 
-   ```bash
-   brew install awscli
-   ```
+  **macOS**:
 
-3. **Configure AWS CLI**:
+  ```bash
+  brew install awscli
+  ```
 
-   ```bash
-   aws configure
-   ```
+  **Linux**:
+
+  ```bash
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+  ```
+
+- **Configure AWS CLI**:
+
+  ```bash
+  aws configure
+  ```
 
 #### **Writing Terraform Configurations**
 
-1. **Create a Working Directory**:
+1. **Create Directory and Files**:
 
    ```bash
    mkdir terraform-aws
    cd terraform-aws
+   touch main.tf variables.tf outputs.tf
    ```
 
-2. **Create a `main.tf` File**:
+2. **Define Provider in `main.tf`**:
 
    ```hcl
    provider "aws" {
-     region = "us-east-1"
+     region = var.region
    }
+   ```
 
+3. **Define Resources**:
+
+   ```hcl
    resource "aws_instance" "web" {
-     ami           = "ami-0c94855ba95c71c99" # Amazon Linux 2 AMI
-     instance_type = "t2.micro"
+     ami           = var.ami
+     instance_type = var.instance_type
 
      tags = {
        Name = "WebServer"
@@ -694,187 +850,83 @@ Terraform allows you to manage infrastructure as code.
    }
    ```
 
-3. **Initialize Terraform**:
+4. **Define Variables in `variables.tf`**:
+
+   ```hcl
+   variable "region" {
+     default = "us-east-1"
+   }
+
+   variable "ami" {
+     default = "ami-0c94855ba95c71c99"
+   }
+
+   variable "instance_type" {
+     default = "t2.micro"
+   }
+   ```
+
+5. **Define Outputs in `outputs.tf`**:
+
+   ```hcl
+   output "instance_ip" {
+     value = aws_instance.web.public_ip
+   }
+   ```
+
+6. **Initialize and Apply**:
 
    ```bash
    terraform init
-   ```
-
-4. **Format and Validate Configuration**:
-
-   ```bash
-   terraform fmt
-   terraform validate
-   ```
-
-5. **Plan and Apply**:
-
-   ```bash
    terraform plan
    terraform apply
    ```
 
-   **Note**: Type `yes` when prompted to confirm.
-
-6. **Access the Instance**:
-
-   - Retrieve the public IP from the output or AWS console.
-   - SSH into the instance (ensure security groups allow SSH access).
-
-7. **Destroy Resources**:
-
-   ```bash
-   terraform destroy
-   ```
-
 #### **Practical Exercises**
 
-1. **Create a Security Group**:
+1. **Security Groups**:
 
-   ```hcl
-   resource "aws_security_group" "allow_ssh" {
-     name        = "allow_ssh"
-     description = "Allow SSH inbound traffic"
+   - Create and associate security groups.
 
-     ingress {
-       from_port   = 22
-       to_port     = 22
-       protocol    = "tcp"
-       cidr_blocks = ["0.0.0.0/0"]
-     }
+2. **Variables and Outputs**:
 
-     egress {
-       from_port   = 0
-       to_port     = 0
-       protocol    = "-1"
-       cidr_blocks = ["0.0.0.0/0"]
-     }
-   }
-   ```
+   - Parameterize configurations.
 
-   - Associate it with your EC2 instance.
+3. **Remote State Storage**:
 
-2. **Use Variables**:
-
-   - Create a `variables.tf` file:
-
-     ```hcl
-     variable "region" {
-       default = "us-east-1"
-     }
-
-     variable "instance_type" {
-       default = "t2.micro"
-     }
-     ```
-
-   - Update `main.tf` to use variables:
-
-     ```hcl
-     provider "aws" {
-       region = var.region
-     }
-
-     resource "aws_instance" "web" {
-       ami           = "ami-0c94855ba95c71c99"
-       instance_type = var.instance_type
-       # ...
-     }
-     ```
-
-3. **Outputs**:
-
-   - Add to `main.tf`:
-
-     ```hcl
-     output "instance_ip" {
-       value = aws_instance.web.public_ip
-     }
-     ```
-
-   - After `terraform apply`, view the output.
+   - Configure S3 backend.
 
 #### **Considerations**
 
-- Keep your AWS credentials secure.
-- Be aware of AWS costs; terminate resources when not in use.
+- **Cost Management**: Destroy resources when not in use.
 
 ### **c. Best Practices**
 
-#### **Use Modules**
+#### **Modules**
 
-- **Create a Module Directory**:
+- **Create Reusable Modules**.
 
-  ```bash
-  mkdir -p modules/ec2_instance
+- **Organize Code**.
+
+#### **Version Control**
+
+- **Use Git**.
+
+- **Ignore Sensitive Files**:
+
+  Create `.gitignore`:
+
+  ```
+  .terraform/
+  terraform.tfstate
+  terraform.tfstate.backup
   ```
 
-- **Define Module Files**:
+#### **Collaboration**
 
-  In `modules/ec2_instance/main.tf`:
+- **Remote State Locking**.
 
-  ```hcl
-  resource "aws_instance" "instance" {
-    ami           = var.ami
-    instance_type = var.instance_type
-    # ...
-  }
-  ```
-
-- **Use Module in `main.tf`**:
-
-  ```hcl
-  module "web_server" {
-    source        = "./modules/ec2_instance"
-    ami           = "ami-0c94855ba95c71c99"
-    instance_type = "t2.micro"
-  }
-  ```
-
-#### **Remote State Management**
-
-- **Configure Backend**:
-
-  ```hcl
-  terraform {
-    backend "s3" {
-      bucket = "your-terraform-state-bucket"
-      key    = "path/to/terraform.tfstate"
-      region = "us-east-1"
-    }
-  }
-  ```
-
-- **Enable Versioning on the S3 Bucket** for state history.
-
-#### **Practical Exercises**
-
-1. **Implement Remote State**: Set up S3 backend for state storage.
-
-2. **Collaborate with Git**:
-
-   - Initialize a Git repository.
-   - Add `.gitignore` to exclude sensitive files:
-
-     ```
-     .terraform/
-     terraform.tfstate
-     terraform.tfstate.backup
-     ```
-
-3. **Use Terraform Workspaces**:
-
-   - Create a new workspace:
-
-     ```bash
-     terraform workspace new dev
-     ```
-
-   - Switch between workspaces:
-
-     ```bash
-     terraform workspace select dev
-     ```
+- **Document Configurations**.
 
 ---
 
@@ -882,56 +934,79 @@ Terraform allows you to manage infrastructure as code.
 
 ### **a. Oracle Cloud Setup**
 
-1. **Sign Up for Oracle Cloud**:
+#### **Sign Up and Install CLI**
 
-   - Visit [Oracle Cloud Free Tier](https://www.oracle.com/cloud/free/) and create an account.
+- **Create Account**.
 
-2. **Install OCI CLI**:
+- **Install OCI CLI**:
 
-   ```bash
-   brew install oci-cli
-   ```
+  **macOS**:
 
-3. **Configure OCI CLI**:
+  ```bash
+  brew install oci-cli
+  ```
 
-   ```bash
-   oci setup config
-   ```
+  **Linux**:
 
-   - Follow the prompts to generate API keys and set up your profile.
+  ```bash
+  bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)"
+  ```
+
+#### **Configure CLI**
+
+```bash
+oci setup config
+```
 
 ### **b. Kubernetes Cluster Management with Cluster API**
 
 #### **Install Prerequisites**
 
-1. **Install `kubectl`**:
+- **kubectl**:
 
-   ```bash
-   brew install kubectl
-   ```
+  **macOS**:
 
-2. **Install `clusterctl`**:
+  ```bash
+  brew install kubectl
+  ```
 
-   ```bash
-   brew install clusterctl
-   ```
+  **Linux**:
 
-3. **Install `kustomize`** (if required):
+  ```bash
+  sudo apt-get install -y apt-transport-https
+  curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+  echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+  sudo apt-get update
+  sudo apt-get install -y kubectl
+  ```
 
-   ```bash
-   brew install kustomize
-   ```
+- **clusterctl**:
+
+  Download from GitHub releases.
+
+- **kind**:
+
+  **macOS**:
+
+  ```bash
+  brew install kind
+  ```
+
+  **Linux**:
+
+  ```bash
+  curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+  chmod +x ./kind
+  sudo mv ./kind /usr/local/bin/kind
+  ```
 
 #### **Initialize Cluster API**
 
-1. **Create a Management Cluster**:
+1. **Create Management Cluster**:
 
-   - Use Kind (Kubernetes in Docker):
-
-     ```bash
-     brew install kind
-     kind create cluster
-     ```
+   ```bash
+   kind create cluster
+   ```
 
 2. **Initialize Providers**:
 
@@ -939,17 +1014,9 @@ Terraform allows you to manage infrastructure as code.
    clusterctl init --infrastructure oracle
    ```
 
-   - Note: Ensure the Oracle infrastructure provider is supported.
-
-3. **Verify Installation**:
-
-   ```bash
-   kubectl get pods -A
-   ```
-
 ### **c. Practical Exercises**
 
-#### **Deploy a Workload Cluster**
+#### **Deploy Workload Cluster**
 
 1. **Generate Cluster Configuration**:
 
@@ -957,26 +1024,21 @@ Terraform allows you to manage infrastructure as code.
    clusterctl generate cluster my-oke-cluster --infrastructure oracle > my-oke-cluster.yaml
    ```
 
-2. **Customize Configuration**:
-
-   - Edit `my-oke-cluster.yaml` to specify details like node count, shapes, and Kubernetes version.
-
-3. **Apply Configuration**:
+2. **Customize and Apply**:
 
    ```bash
    kubectl apply -f my-oke-cluster.yaml
    ```
 
-4. **Monitor Cluster Creation**:
+3. **Monitor Cluster Creation**:
 
    ```bash
    kubectl get clusters
-   kubectl get nodes --kubeconfig ./my-oke-cluster.kubeconfig
    ```
 
-#### **Deploy an Application**
+#### **Deploy Applications**
 
-1. **Switch Context to Workload Cluster**:
+1. **Switch Context**:
 
    ```bash
    export KUBECONFIG=./my-oke-cluster.kubeconfig
@@ -988,16 +1050,9 @@ Terraform allows you to manage infrastructure as code.
    kubectl apply -f https://k8s.io/examples/application/deployment.yaml
    ```
 
-3. **Verify Deployment**:
-
-   ```bash
-   kubectl get deployments
-   kubectl get pods
-   ```
-
 #### **Cleanup**
 
-- **Delete the Workload Cluster**:
+- **Delete Cluster**:
 
   ```bash
   kubectl delete cluster my-oke-cluster
@@ -1005,45 +1060,40 @@ Terraform allows you to manage infrastructure as code.
 
 #### **Considerations**
 
-- Ensure you have the necessary permissions in Oracle Cloud.
-- Be mindful of resource usage to avoid unexpected charges.
+- **Permissions**: Ensure proper OCI permissions.
+- **Costs**: Monitor resource usage.
 
 ---
 
 ## **7. Additional Resources**
 
-- **macOS Development**
+- **Linux**
 
-  - _macOS Internals: A Systems Approach_ by Jonathan Levin
-  - _UNIX for Mac OS X Users_ on [Apple Developer](https://developer.apple.com/library/archive/documentation/OpenSource/Conceptual/ShellScripting/Introduction/Introduction.html)
+  - _The Linux Command Line_ by William Shotts
+  - _Linux Performance and Tuning Guidelines_
+
+- **macOS**
+
+  - _macOS Terminal and Shell_ by Apple
 
 - **Git**
 
-  - GitHub Guides: https://guides.github.com/
-  - _Pro Git_ by Scott Chacon and Ben Straub: https://git-scm.com/book/en/v2
+  - _Pro Git_ by Scott Chacon and Ben Straub
 
 - **Ansible**
 
-  - Official Documentation: https://docs.ansible.com/
-  - Ansible Examples on GitHub: https://github.com/ansible/ansible-examples
+  - _Ansible for DevOps_ by Jeff Geerling
 
 - **Terraform**
 
-  - HashiCorp Learn: https://learn.hashicorp.com/terraform
-  - AWS Provider Docs: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+  - _Terraform Up and Running_ by Yevgeniy Brikman
 
-- **Kubernetes and Cluster API**
+- **Kubernetes**
 
-  - Kubernetes Documentation: https://kubernetes.io/docs/home/
-  - Cluster API Book: https://cluster-api.sigs.k8s.io/user/quick-start.html
-
-- **Oracle Cloud**
-
-  - OCI Documentation: https://docs.oracle.com/en-us/iaas/Content/home.htm
-  - OKE Documentation: https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengoverview.htm
+  - _Kubernetes in Action_ by Marko Lukša
 
 ---
 
-**Note**: Ensure that you have administrative privileges on your Mac for certain commands. Always exercise caution when running commands with `sudo`, and back up important data before making significant system changes.
+## **8. Conclusion**
 
----
+This comprehensive guide covers both macOS and Linux environments, ensuring you're well-prepared for the hybrid infrastructure at high-speed trading firm. By working through the practical exercises, you'll gain hands-on experience that's directly applicable to your internship.
