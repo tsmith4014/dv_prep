@@ -14,13 +14,11 @@
    - [2.2. Forking and Making Changes](#22-forking-and-making-changes)
    - [2.3. Merging Back and Updating Upstream Submodules](#23-merging-back-and-updating-upstream-submodules)
 4. [Ansible](#ansible)
-   - [3.1. Installation](#31-installation)
-   - [3.2. Configuration Management](#32-configuration-management)
-   - [3.3. Advanced Concepts](#33-advanced-concepts)
+   - [3.1. Configuration Management](#31-configuration-management)
+   - [3.2. Advanced Concepts](#32-advanced-concepts)
 5. [Terraform](#terraform)
-   - [4.1. Installation](#41-installation)
-   - [4.2. AWS Infrastructure Automation](#42-aws-infrastructure-automation)
-   - [4.3. Best Practices](#43-best-practices)
+   - [4.1. AWS Infrastructure Automation](#41-aws-infrastructure-automation)
+   - [4.2. Best Practices](#42-best-practices)
 6. [Oracle Cloud and OKE Cluster with Cluster API](#oracle-cloud-and-oke-cluster-with-cluster-api)
    - [5.1. Oracle Cloud Setup](#51-oracle-cloud-setup)
    - [5.2. Kubernetes Cluster Management with Cluster API](#52-kubernetes-cluster-management-with-cluster-api)
@@ -864,16 +862,6 @@ Forking a repository allows you to contribute to projects without affecting the 
 
 Automating configuration management with Ansible ensures consistency and efficiency in deploying infrastructure.
 
-### 3.1. Installation
-
-**macOS**
-
-```bash
-brew install ansible
-```
-
-_Description_: Installs Ansible using Homebrew.
-
 **Linux**
 
 - **Debian/Ubuntu**:
@@ -885,7 +873,7 @@ _Description_: Installs Ansible using Homebrew.
 
 _Description_: Installs Ansible using the package manager.
 
-### 3.2. Configuration Management
+### 3.1. Configuration Management
 
 #### Setting Up a Test Environment
 
@@ -1093,7 +1081,7 @@ _Description_: Installs Ansible using the package manager.
 - **Variables and Templates**: Use variables and Jinja2 templates to manage configuration files dynamically.
 - **Testing**: Use Ansible's `--check` mode to perform dry runs.
 
-### 3.3. Advanced Concepts
+### 3.2. Advanced Concepts
 
 #### Ansible Vault
 
@@ -1212,15 +1200,6 @@ _Description_: Installs Ansible using the package manager.
 
 Automating infrastructure provisioning with Terraform ensures consistency and reduces manual errors.
 
-### 4.1. Installation
-
-**macOS**
-
-```bash
-brew tap hashicorp/tap
-brew install hashicorp/tap/terraform
-```
-
 **Linux**
 
 - **Debian/Ubuntu**:
@@ -1232,7 +1211,7 @@ brew install hashicorp/tap/terraform
   sudo apt-get update && sudo apt-get install terraform
   ```
 
-### 4.2. AWS Infrastructure Automation
+### 4.1. AWS Infrastructure Automation
 
 #### Setting Up AWS Credentials
 
@@ -1361,7 +1340,7 @@ brew install hashicorp/tap/terraform
 - **Network Security**: Configure security groups to allow necessary traffic and secure the application.
 - **Scalability**: Plan for scaling the infrastructure as needed.
 
-### 4.3. Best Practices
+### 4.2. Best Practices
 
 #### Use of Modules
 
