@@ -1,10 +1,6 @@
-Certainly! Given your timeframe from October 1st to October 19th, here's a condensed and prioritized plan to help you prepare effectively for your DevOps and System Administrator internship at DV Trading.
+# **Week 1 (Oct 1 - Oct 7): Linux Internals and Git Proficiency**
 
----
-
-### **Week 1 (Oct 1 - Oct 7): Linux Internals and Git Proficiency**
-
-#### **Oct 1-3: Linux Internals**
+### **Oct 1-3: Linux Internals**
 
 - **Objective**: Understand key Linux internals that are critical for trading and low-latency workloads.
 
@@ -34,7 +30,6 @@ Certainly! Given your timeframe from October 1st to October 19th, here's a conde
 - **Actions**:
   - **Enhance Command-Line Skills**:
     - Review the [GNU Readline Library](https://tiswww.case.edu/php/chet/readline/rltop.html).
-    - Practice keyboard shortcuts for efficient command-line editing.
     - Customize your shell (Bash or Zsh) to optimize your workflow.
 
 #### **Oct 4-7: Git Proficiency**
@@ -42,6 +37,8 @@ Certainly! Given your timeframe from October 1st to October 19th, here's a conde
 ##### **Git Basics and Submodules**
 
 - **Objective**: Refresh core Git concepts and learn to work with submodules.
+
+  - Practice keyboard shortcuts for efficient command-line editing.
 
 - **Actions**:
   - **Review Fundamentals**:
@@ -177,7 +174,3 @@ Certainly! Given your timeframe from October 1st to October 19th, here's a conde
   - If you come across unfamiliar terms or technologies, take brief detours to understand them.
 
 ---
-
-By following this tailored plan, you'll cover the essential topics highlighted by your future team within your available time. This preparation will help you start your internship confidently and make meaningful contributions from day one.
-
-**Good luck with your studies, safe travels, and best wishes for your upcoming internship at DV Trading!**
