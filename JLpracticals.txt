@@ -1,0 +1,96 @@
+
+
+NUMA (Non-Uniform Memory Access) 
+1. Why would you want to use one NUMA Domain over another?
+2. How would you pin a process to a specific Core to make use of a NUMA Domain?
+3. What is DMA (Direct Memory Access) and what are the pros and cons of using DMA for kernel bypass vs using the kernel?
+4. What does a "cache miss" signify? How would you detect it?
+
+
+Ansible
+5. Investigate `ansible-pull` and consider the pros and cons of push vs pull when it comes to configuration management.
+6. Review the code below and understand its components:
+   ```
+   sudo ansible-pull -U https://github.com/caffeineaddiction/profile_setup.git -C "master" -e "target_user=${SUDO_USER:-$(whoami)}" --skip-tags vault -i localhost, setup.yml
+   ```
+
+7. How would you get this to default the shell to `zsh` rather than `fish`?
+8. What are the pros and cons of making a change to `~/.bashrc` rather than setting the shell in `/etc/passwd`?
+
+
+Command-Line Efficiency
+9. Try using `grep` with history (bonus points if you can use regex).
+
+               grep [options] PATTERN [FILE...] 
+               grep "pattern" filename
+               grep "pattern" file1 file2 file3
+               grep -r "pattern" directory/ recursive search of all files in the directory and subdirectories
+               grep -i "pattern" filename case-insensitive search
+               grep -n "pattern" filename display line number in front of the matched line
+               grep -v "pattern" filename display all the lines that do not match/inverts search
+
+
+               grep options:
+               -i: Ignore case distinctions in patterns and data.
+               -v: Invert the match, showing lines that do not match the pattern.
+               -r or -R: Recursively search directories.
+               -l: Print only the names of files with matching lines.
+               -n: Prefix each line of output with the line number within its input file.
+               -e: Specify multiple patterns to match.
+               -w: Match whole words only.    
+               -c: Print only a count of the lines that match.
+               -o: Show only the part of a line that matches the pattern.
+               -A NUM: Print NUM lines of trailing context after matching lines.
+               -B NUM: Print NUM lines of leading context before matching lines.
+               -C NUM: Print NUM lines of output context.
+               -f FILE: Read one or more newline-separated patterns from a file.
+               -q: Quiet mode: suppress normal output. grep will only search for the pattern and return a 0 exit status if it is found.
+               -s: Suppress error messages about nonexistent or unreadable files.
+               -x: Match whole lines only.
+               
+               examples:
+               head -n 10 draft_players.csv = cat draf_players.csv | head -n 10 #but this only works on logs and not on files
+               tail -n 10 draft_players.csv = cat draf_players.csv | tail -n 10
+
+
+
+   so to use grep with history would mean to use grep with the terminal history file.
+   need to give the history as the file and then a pattern to search for.  
+    
+   First lets try using grep on a file with a simple patter of "grep" and see what it returns.
+   > grep "grep" JL_practicals.txt 
+  
+
+   Now lets try using grep with the history file without using the pipe operator.
+
+   > grep "grep" ~/.bash_history 
+      kubectl describe daemonset aws-node -n kube-system | grep Image
+      ps aux | grep python
+
+   Quick review of using the pipe | operator with grep:
+
+   Command: ps aux | grep python
+         ps aux:
+
+         ps: The command to display information about active processes.
+         aux: Options to show detailed information about all running processes:
+         a: Shows processes for all users.
+         u: Displays the processes in a user-oriented format.
+         x: Includes processes that are not attached to a terminal.
+         This command lists all running processes on the system with detailed information such as user, PID, CPU usage, memory usage, and command.
+
+         | grep python:
+
+         |: The pipe operator takes the output of the command on its left and passes it as input to the command on its right.
+         grep python: Searches for lines containing the word "python" in the input it receives.
+         Effect: This command filters the list of all running processes to show only the lines that contain the word "python". This is useful for quickly finding all Python processes running on the system.
+
+   
+
+
+10. Create a `~/.ssh/config` and figure out how to:
+   - Give an entry a nickname.
+   - Set up Dynamic Port Forwarding (bonus points if you can proxy your browser through it so that your external IP appears as the remote box).
+   - Use jumphosting like `ProxyCommand ssh -W %h:%p jump-host` and understand why it might be useful.
+   
+11. See if you can update your `$PATH` to prioritize binaries in `~/bin/` before the system binaries, and consider why this might be useful.

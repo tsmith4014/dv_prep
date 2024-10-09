@@ -1,0 +1,14 @@
+Why would you want to use one Numa Domain over another?
+How would you pin a process to a specific Core to make use of a Numa Domain?
+What is DMA (Direct Memory Access) and what are the pros / cons of using DMA for kernel bypass vs using the kernel
+What does a "cache miss" signify? How would you detect it?
+Investigate ansible-pull and consider the pros and cons of push vs pull when it comes to config management
+Review the code involved in sudo ansible-pull -U https://github.com/caffeineaddiction/profile_setup.git -C "master" -e "target_user=${SUDO_USER:-$(whoami)}" --skip-tags vault -i localhost, setup.yml
+How would you get this to default the shell to zsh rather than fish
+What are the pros and cons of making a change to ~/.bashrc rather than setting shell in /etc/passwd
+try using grep with history (bonus points if you can use regex)
+create a ~/.ssh/config and figure out how to do the following
+give an entry a nickname
+setup Dynamic port forwarding (bonus points if you can proxy your browser through it such that your external IP appears as the remote box)
+use jumphosting like ProxyCommand ssh -W %h:%p jump-host and figure out why it might be useful
+see if you can update your $PATH to point to binaries in ~/bin/ before the ones on the system itself and consider why this might be useful
