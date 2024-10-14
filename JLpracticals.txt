@@ -162,27 +162,30 @@ helm\s+\w+: Matc
 
 
 10. Create a `~/.ssh/config` and figure out how to:
+
    - Give an entry a nickname.
+   - Set up Dynamic Port Forwarding (bonus points if you can proxy your browser through it so that your external IP appears as the remote box).
+   - Use jumphosting like `ProxyCommand ssh -W %h:%p jump-host` and understand why it might be useful.
 
-   #below are some configs pulled from my .ssh/config file
-   
-   # Configuration for your EC2 server...this is not live old ec2 and key
-Host RoyaleWithCheese
-    HostName ec2-34-229-231-169.compute-1.amazonaws.com
-    User ubuntu
-    IdentityFile ~/.ssh/devops-ew.pem
-    IdentitiesOnly yes
-    UseKeychain yes
+   # Dynamic port forwarding
+# This sets up an SSH tunnel that allows your local browser to tunnel via a SOCKS v5 proxy,
+# effectively hiding your local IP address. It makes your local machine appear as if it is part of the remote network,
+# bypassing firewalls and allowing for secure remote SSH connections.
+Host royalewchz
+    HostName ec2-34-228-53-222.compute-1.amazonaws.com  # The hostname or IP address of the remote server.
+    User ec2-user                                       # The username to log in as on the remote server.
+    IdentityFile ~/.ssh/expense-app-api.pem             # The private key file for authentication.
+    IdentitiesOnly yes                                  # Ensures only the specified identity file is used.
+    UseKeychain yes                                     # Uses the macOS keychain to store the passphrase for the private key.
+    DynamicForward 1080                                 # Sets up dynamic port forwarding on local port 1080 (SOCKS proxy).
 
+# Configuration for the jump host (AWS EC2 instance)
+# This block defines the settings for connecting to the jump host.
+Host jump-host
+    HostName ec2-34-228-53-222.compute-1.amazonaws.com  # The hostname or IP address of the jump host.
+    User ec2-user                                       # The username to log in as on the jump host.
+    IdentityFile ~/.ssh/expense-app-api.pem             # The private key file for authentication.
 
-#testing for bravo this is not live
-Host test
-    HostName 54.236.14.106
-    Port 22
-    User ubuntu
-    IdentityFile ~/.ssh/test.pem
-
-Configure browser proxy settings to use dynamic port forwarding through SSH:
 
 For Firefox:
 
@@ -212,8 +215,21 @@ After configuring browser, visit a website like https://www.whatismyip.com/ to c
 It should now show the IP address of the remote server, indicating that your traffic is being routed through the SSH tunnel.
 
 
-   - Set up Dynamic Port Forwarding (bonus points if you can proxy your browser through it so that your external IP appears as the remote box).
+
    - Use jumphosting like `ProxyCommand ssh -W %h:%p jump-host` and understand why it might be useful.
+
+   # Configuration for the target server (another AWS EC2 instance) using the jump host
+# This block defines the settings for connecting to the target server through the jump host.
+Host target-host
+    HostName ec2-3-93-54-208.compute-1.amazonaws.com    # The hostname or IP address of the target server.
+    User ec2-user                                       # The username to log in as on the target server.
+    IdentityFile ~/.ssh/target-host.pem                 # The private key file for authentication.
+    ProxyCommand ssh -W %h:%p jump-host                 # Uses the jump host as a proxy to connect to the target server.
+Configure browser proxy settings to use dynamic port forwarding through SSH:
+
+
+
+   
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

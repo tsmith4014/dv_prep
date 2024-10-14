@@ -20,9 +20,14 @@ Command-Line Efficiency
 
 [Complete] - try using grep with history (bonus points if you can use regex)
 
-create a ~/.ssh/config and figure out how to do the following
- [Complete] give an entry a nickname
+[Complete] - create a ~/.ssh/config and figure out how to do the following
+  give an entry a nickname
   setup Dynamic port forwarding (bonus points if you can proxy your browser through it such that your external IP appears as the remote box)
   use jumphosting like ProxyCommand ssh -W %h:%p jump-host and figure out why it might be useful
 
-see if you can update your $PATH to point to binaries in ~/bin/ before the ones on the system itself and consider why this might be useful
+[Complete] see if you can update your $PATH to point to binaries in ~/bin/ before the ones on the system itself and consider why this might be useful
+
+
+
+
+
